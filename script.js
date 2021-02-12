@@ -26,11 +26,7 @@ var curi = -1;
 var curj = -1;
 
 $(document).ready(function () {
-    // Build page content.
-    $('body').append($('<div>').addClass('wrapper')
-    	.append($('<center>')
-    	.append(generateSudokuGrid())));
-
+    $('#center').append(generateSudokuGrid());
     redrawGrid();
 
     var sudoku = document.getElementById('sudoku');
@@ -42,7 +38,22 @@ $(document).ready(function () {
     	if(!data[i+9*j]) {
     		curi = i;
     		curj = j;
+    	} else {
+    		curi = -1;
+    		curj = -1;
     	}
+    };
+
+    var reset = document.getElementById('reset');
+    reset.onclick = function(evt){
+    	data_work = [...data];
+    	document.getElementById('feedback').innerHTML = "";
+    	redrawGrid();
+    };
+
+    var check = document.getElementById('check');
+    check.onclick = function(evt){
+    	checkGrid();
     };
 
     document.addEventListener('keydown', function(event) {
@@ -89,3 +100,24 @@ function multiPush(count, func, scope) {
 	return arr;
 }
 
+function checkGrid() {
+	var correct = true;
+	for (var j = 0; j < 9; j++) {
+		var sum1 = 0;
+		for (var i = 0; i < 9; i++) {
+			sum1 += data_work[i];
+		}
+		var sum2 = 0;
+		for (var i = j; i <= j+8*9; i+=9) {
+			sum2 += data_work[i];
+		}
+		if(sum1 != 45 || sum2 != 45) {
+			correct = false;
+		}
+	}
+	if(correct) {
+		document.getElementById('feedback').innerHTML = "Your solution is correct!";
+	} else {
+		document.getElementById('feedback').innerHTML = "There is at least one error in the grid.";
+	}
+}
