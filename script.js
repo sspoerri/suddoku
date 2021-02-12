@@ -24,80 +24,42 @@ var quizzes = [
 
 ];
 
-var n = 0;
-
-var data = [
-    1, 0, 3, 6, 0, 4, 7, 0, 9, // 0x0
-    0, 2, 0, 0, 9, 0, 0, 1, 0, // 0x1
-    7, 0, 0, 0, 0, 0, 0, 0, 6, // 0x2
-    2, 0, 4, 0, 3, 0, 9, 0, 8, // 1x0
-    0, 0, 0, 0, 0, 0, 0, 0, 0, // 1x1
-    5, 0, 0, 9, 0, 7, 0, 0, 1, // 1x2
-    6, 0, 0, 0, 5, 0, 0, 0, 2, // 2x0
-    0, 0, 0, 0, 7, 0, 0, 0, 0, // 2x1
-    9, 0, 0, 8, 0, 2, 0, 0, 5  // 2x2
-];
-
+var colors = fillArray('',9*9);
+var n = 0; // Quiz id
+var data;
 var data_work;
-
 var curi = -1;
 var curj = -1;
 
-$(document).ready(function () {
-    $('#center').append(generateSudokuGrid());
-    data = [...quizzes[n]];
-    data_work = [...data];
-    redrawGrid();
+function fillArray(value, len) {
+  var arr = [];
+  for (var i = 0; i < len; i++) {
+    arr.push(value);
+  }
+  return arr;
+}
 
-    var sudoku = document.getElementById('sudoku');
-    sudoku.onclick = function(evt){
-    	var x = evt.pageX - $('#sudoku').offset().left;
-    	var y = evt.pageY - $('#sudoku').offset().top;
-    	var i = Math.floor( x/40 );
-    	var j = Math.floor( y/40 );
-    	if(!data[i+9*j]) {
-    		curi = i;
-    		curj = j;
-    	} else {
-    		curi = -1;
-    		curj = -1;
-    	}
-    };
-
-    var reset = document.getElementById('reset');
-    reset.onclick = function(evt){
-    	n += 1;
-    	n %= quizzes.length;
-    	data = [...quizzes[n]];
-    	data_work = [...data];
-    	document.getElementById('feedback').innerHTML = "";
-    	redrawGrid();
-    };
-
-    var check = document.getElementById('check');
-    check.onclick = function(evt){
-    	checkGrid();
-    };
-
-    document.addEventListener('keydown', function(event) {
-	    if(event.keyCode >= 48 && event.keyCode <= 57) {
-			if(curi != -1 && curj != -1) {
-				data_work[curi + 9*curj] = event.keyCode - 48;
-				redrawGrid();
-			}
-	    };
-	});
-});
+function resetGrid() {
+	curi = -1;
+	curj = -1;
+	colors = fillArray('',9*9);
+	data = [...quizzes[n]];
+	data_work = [...data];
+	document.getElementById('feedback').innerHTML = "";
+	redrawGrid();
+}
 
 function redrawGrid() {
     $('table[class^="sudoku"]').each(function (index, grid) {
-    	populateGrid($(grid), data);
+    	populateGrid($(grid), data_work);
     });
 }
 
 function populateGrid(grid, data) {
 	grid.find('td').each(function (index, td) {
+		$(td).removeClass();
 		$(td).text(data_work[index] || '');
+		$(td).addClass(colors[index] || '');
 	});
 }
 
@@ -123,6 +85,61 @@ function multiPush(count, func, scope) {
 	return arr;
 }
 
+function getRow(grid,i) {
+	var i0 = Math.floor(i/9)*9;
+	return grid.slice(i0,i0+9);
+}
+
+function getCol(grid,i) {
+	var i0 = i%9;
+	var row = [];
+	for(var j=0; j<9; j++)
+		row.push(grid[i0+9*j]);
+	return row;
+}
+
+function getBlock(grid,i) {
+	var i0 = Math.floor((i%9)/3)*3;
+	var j0 = Math.floor(Math.floor(i/9)/3)*3;
+	var block = [];
+	for(var l=0; l<3; l++) {
+		for(var m=0; m<3; m++) {
+			block.push(grid[i0+l+9*(j0+m)]);
+		}
+	}
+	return block;
+}
+
+function isValidGuess(grid,i,n) {
+	return !getCol(grid,i).includes(n) && !getRow(grid,i).includes(n) && !getBlock(grid,i).includes(n);
+}
+
+var recursionCalled = 0;
+
+function solveGridRecursion(i) {
+	recursionCalled += 1;
+	console.log(recursionCalled);
+	if(i==data_work.length) {
+		return true;
+	}
+	if(data_work[i]) {
+		return solveGridRecursion(i+1);
+	}
+	var n = 1;
+	while(n < 10) {
+		if(isValidGuess(data_work,i,n)) {
+			//console.log('deeper');
+			data_work[i] = n;
+			if(solveGridRecursion(i+1)) {
+				return true;
+			}
+		}
+		n += 1;
+	}
+	data_work[i] = 0;
+	return false;
+}
+
 function checkGrid() {
 	var correct = true;
 	for (var j = 0; j < 9; j++) {
@@ -138,9 +155,86 @@ function checkGrid() {
 			correct = false;
 		}
 	}
-	if(correct) {
-		document.getElementById('feedback').innerHTML = "Your solution is correct!";
-	} else {
-		document.getElementById('feedback').innerHTML = "There is at least one error in the grid.";
-	}
+	return correct;
 }
+
+$(document).ready(function () {
+	$('[data-toggle="popover"]').popover();   
+    $('#center').append(generateSudokuGrid());
+    data = [...quizzes[n]];
+    data_work = [...data];
+    redrawGrid();
+
+    //Events
+    var sudoku = document.getElementById('sudoku');
+    sudoku.onclick = function(evt){
+    	var x = evt.pageX - $('#sudoku').offset().left;
+    	var y = evt.pageY - $('#sudoku').offset().top;
+    	var i = Math.floor( x/40 );
+    	var j = Math.floor( y/40 );
+    	if(!data[i+9*j] && !(i==curi&&j==curj)) {
+    		colors[curi+9*curj] = '';
+    		curi = i;
+    		curj = j;
+    		colors[curi+9*curj] = 'td-selected';
+    	} else {
+    		colors[curi+9*curj] = '';
+    		curi = -1;
+    		curj = -1;
+    	}
+    	redrawGrid();
+    };
+
+    var reset = document.getElementById('reset');
+    reset.onclick = function(evt){
+    	resetGrid();
+    };
+
+    var check = document.getElementById('check');
+    check.onclick = function(evt){
+    	if(checkGrid()) {
+			document.getElementById('feedback').innerHTML = "Your solution is correct!";
+		} else {
+			document.getElementById('feedback').innerHTML = "There is at least one error in the grid.";
+		}
+    };
+
+    var solve = document.getElementById('solve');
+    solve.onclick = function(evt){
+
+    	//console.log(getRow(data_work,3));
+    	//console.log(getCol(data_work,3));
+    	//console.log(getBlock(data_work,3));
+    	//console.log(isValidGuess(data_work,4,8));
+    	//console.log(isValidGuess(data_work,4,1));
+    	//console.log(isValidGuess(data_work,4,5));
+    	//console.log(isValidGuess(data_work,1,7));
+    	//console.log(isValidGuess(data_work,1,5));
+    	//console.log(getBlock(data_work,9));
+    	console.log(getRow([1, 5, 3, 6, 2, 4, 7, 8, 9, 0, 2, 0, 0, 9, 0, 0, 1, 0, 7, 0, 0, 0, 0, 0, 0, 0, 6, 2, 0, 4, 0, 3, 0, 9, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 9, 0, 7, 0, 0, 1, 6, 0, 0, 0, 5, 0, 0, 0, 2, 0, 0, 0, 0, 7, 0, 0, 0, 0, 9, 0, 0, 8, 0, 2, 0, 0, 5],9));
+    	solveGridRecursion(0);
+    	console.log(data_work);
+    	redrawGrid();
+    };
+
+    var quiz1 = document.getElementById('quiz1');
+    quiz1.onclick = function(evt){
+    	n = 0;
+    	resetGrid();
+    };
+
+    var quiz2 = document.getElementById('quiz2');
+    quiz2.onclick = function(evt){
+    	n = 1;
+    	resetGrid();
+    };
+
+    document.addEventListener('keydown', function(event) {
+	    if(event.keyCode >= 48 && event.keyCode <= 57) {
+			if(curi != -1 && curj != -1) {
+				data_work[curi + 9*curj] = event.keyCode - 48;
+				redrawGrid();
+			}
+	    };
+	});
+});

@@ -13,3 +13,13 @@ table.sudoku {
 	padding: 0;
 	font-size: 1.2em;
 }
+
+.td-selected {
+	background-color: lightgreen;
+}
+
+.level-menu {
+	position: absolute;
+	bottom: 5px;
+	left: 5px;
+}
