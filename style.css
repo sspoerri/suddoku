@@ -1,0 +1,19 @@
+div.table-holder {
+	text-align: center;
+}
+
+table.sudoku {
+	border-collapse: collapse;
+	font-family: Calibri, sans-serif;
+}
+.sudoku colgroup, tbody {
+	border: solid medium;
+}
+.sudoku td {
+	border: solid thin;
+	height: 3em;
+	width: 3em;
+	text-align: center;
+	padding: 0;
+	font-size: 1.2em;
+}
