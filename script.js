@@ -31,6 +31,7 @@ var data;
 var data_work;
 var curi = -1;
 var curj = -1;
+var solver = new SudokuSolver();
 
 // --- Utility functions for display ------------------------------------------------------- //
 
@@ -88,77 +89,6 @@ function multiPush(count, func, scope) {
 	return arr;
 }
 
-// --- Utility functions for solver ------------------------------------------------------- //
-
-function getRow(grid,i) {
-	var i0 = Math.floor(i/9)*9;
-	return grid.slice(i0,i0+9);
-}
-
-function getCol(grid,i) {
-	var i0 = i%9;
-	var row = [];
-	for(var j=0; j<9; j++)
-		row.push(grid[i0+9*j]);
-	return row;
-}
-
-function getBlock(grid,i) {
-	var i0 = Math.floor((i%9)/3)*3;
-	var j0 = Math.floor(Math.floor(i/9)/3)*3;
-	var block = [];
-	for(var l=0; l<3; l++) {
-		for(var m=0; m<3; m++) {
-			block.push(grid[i0+l+9*(j0+m)]);
-		}
-	}
-	return block;
-}
-
-function isValidGuess(grid,i,n) {
-	return !getCol(grid,i).includes(n) && !getRow(grid,i).includes(n) && !getBlock(grid,i).includes(n);
-}
-
-function solveGridRecursion(i) {
-	if(i==data_work.length) {
-		return true;
-	}
-	if(data_work[i]) {
-		return solveGridRecursion(i+1);
-	}
-	var n = 1;
-	while(n < 10) {
-		if(isValidGuess(data_work,i,n)) {
-			//console.log('deeper');
-			data_work[i] = n;
-			if(solveGridRecursion(i+1)) {
-				return true;
-			}
-		}
-		n += 1;
-	}
-	data_work[i] = 0;
-	return false;
-}
-
-function checkGrid() {
-	var correct = true;
-	for (var j = 0; j < 9; j++) {
-		var sum1 = 0;
-		for (var i = 0; i < 9; i++) {
-			sum1 += data_work[i];
-		}
-		var sum2 = 0;
-		for (var i = j; i <= j+8*9; i+=9) {
-			sum2 += data_work[i];
-		}
-		if(sum1 != 45 || sum2 != 45) {
-			correct = false;
-		}
-	}
-	return correct;
-}
-
 // --- Setup ----------------------------------------------------------------------------- //
 
 $(document).ready(function () {
@@ -195,7 +125,7 @@ $(document).ready(function () {
 
     var check = document.getElementById('check');
     check.onclick = function(evt){
-    	if(checkGrid()) {
+    	if(solver.checkGrid(data_work)) {
     		document.getElementById('feedback').innerHTML = "Your solution is correct!";
     	} else {
     		document.getElementById('feedback').innerHTML = "There is at least one error in the grid.";
@@ -204,7 +134,7 @@ $(document).ready(function () {
 
     var solve = document.getElementById('solve');
     solve.onclick = function(evt){
-    	solveGridRecursion(0);
+    	solver.solveGrid(data_work);
     	redrawGrid();
     };
 

@@ -1,48 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Sudoku</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
+	<title>Sudoku</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<script src="sudokusolver.js"></script>
+	<script src="script.js"></script>
 </head>
 
 <body>
 
-<div class="jumbotron text-center">
-  <h1>Sudoku</h1>
-  <p>Train your sudoku solving skills!</p> 
-</div>
+	<div class="jumbotron text-center">
+		<h1>Sudoku</h1>
+		<p>Train your sudoku solving skills!</p> 
+	</div>
 
-<div class="wrapper">
-	<center id="center">
-		
-	</center>
+	<div class="wrapper">
 
-<div class="d-flex justify-content-center">
-	<center style="margin-top: 10px">
-		<button type="button" class="btn btn-danger btn-lg" id="reset" data-container="body" data-toggle="popover" data-placement="bottom" data-content="You will loose your current progress." data-trigger="hover">Reset</button>
-		<button type="button" class="btn btn-success btn-lg" id="check" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Checks if there are errors in the grid." data-trigger="hover">Check</button>
-		<button type="button" class="btn btn-primary btn-lg" id="solve" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Solves the rest of the puzzle for you. This is not possible if you already made mistakes." data-trigger="hover">Solve</button>
-		<button type="button" class="btn btn-secondary btn-lg" data-container="body" data-toggle="popover" data-placement="right" data-content="Select an empty field by clicking. Insert numbers by typing them on the keyboard. Use 0 to remove a number. You can also use my implementation of a recursive sudoku solver if you are lazy." data-trigger="hover">
-			Help
-		</button>
-	</center>
-	<center style="margin-top: 10px">
-		<span id="feedback"></span>
-	</center>
-</div>
+		<div class="row">
+			<div class="col col-md-4" style="padding-bottom: 5px;">
+				<center>
+					<div class="btn-group-vertical level-menu" style="width: 45%;">
+						<button type="button" class="btn btn-primary" id="quiz1">Quiz 1</button>
+						<button type="button" class="btn btn-primary" id="quiz2">Quiz 2</button>
+					</div>
+				</center>
+			</div>
+			<div class="col col-md-4"><center id="center"></center></div>
+			<div class="col col-md-4"></div>
 
-<div class="btn-group-vertical level-menu">
-  <button type="button" class="btn btn-primary" id="quiz1">Quiz 1</button>
-  <button type="button" class="btn btn-primary" id="quiz2">Quiz 2</button>
-</div>
+		</div>
 
-</div>
+		<div class="d-flex justify-content-center">
+			<center style="margin-top: 10px">
+				<div class="btn-group" role="group" aria-label="Basic example">
+					<button type="button" class="btn btn-danger btn-lg" id="reset" data-container="body" data-toggle="popover" data-placement="bottom" data-content="You will loose your current progress." data-trigger="hover">Reset</button>
+					<button type="button" class="btn btn-success btn-lg" id="check" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Checks if there are errors in the grid." data-trigger="hover">Check</button>
+					<button type="button" class="btn btn-primary btn-lg" id="solve" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Solves the rest of the puzzle for you. This is not possible if you already made mistakes." data-trigger="hover">Solve</button>
+					<button type="button" class="btn btn-secondary btn-lg" data-container="body" data-toggle="popover" data-placement="right" data-content="Select an empty field by clicking. Insert numbers by typing them on the keyboard. Use 0 to remove a number. You can also use my implementation of a recursive sudoku solver if you are lazy." data-trigger="hover">
+						Help
+					</button>
+				</div>
+			</center>
+			<center style="margin-top: 10px">
+				<span id="feedback"></span>
+			</center>
+		</div>
+
+	</div>
 
 </body>
 </html>

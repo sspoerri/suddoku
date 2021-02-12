@@ -17,9 +17,3 @@ table.sudoku {
 .td-selected {
 	background-color: lightgreen;
 }
-
-.level-menu {
-	position: absolute;
-	bottom: 5px;
-	left: 5px;
-}
