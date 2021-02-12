@@ -1,3 +1,5 @@
+// --- Global variables -------------------------------------------------------------------- //
+
 var quizzes = [
 	[
 	    1, 0, 3, 6, 0, 4, 7, 0, 9, // 0x0
@@ -9,8 +11,8 @@ var quizzes = [
 	    6, 0, 0, 0, 5, 0, 0, 0, 2, // 2x0
 	    0, 0, 0, 0, 7, 0, 0, 0, 0, // 2x1
 	    9, 0, 0, 8, 0, 2, 0, 0, 5  // 2x2
-	],
-	[
+    ],
+    [
 	    2, 0, 0, 8, 0, 4, 0, 0, 6, // 0x0
 	    0, 0, 6, 0, 0, 0, 5, 0, 0, // 0x1
 	    0, 7, 4, 0, 0, 0, 9, 2, 0, // 0x2
@@ -20,8 +22,7 @@ var quizzes = [
 	    0, 1, 9, 0, 0, 0, 7, 4, 0, // 2x0
 	    0, 0, 8, 0, 0, 0, 2, 0, 0, // 2x1
 	    5, 0, 0, 6, 0, 8, 0, 0, 1  // 2x2
-	]
-
+	    ]
 ];
 
 var colors = fillArray('',9*9);
@@ -31,12 +32,14 @@ var data_work;
 var curi = -1;
 var curj = -1;
 
+// --- Utility functions for display ------------------------------------------------------- //
+
 function fillArray(value, len) {
-  var arr = [];
-  for (var i = 0; i < len; i++) {
-    arr.push(value);
-  }
-  return arr;
+	var arr = [];
+	for (var i = 0; i < len; i++) {
+		arr.push(value);
+	}
+	return arr;
 }
 
 function resetGrid() {
@@ -50,9 +53,9 @@ function resetGrid() {
 }
 
 function redrawGrid() {
-    $('table[class^="sudoku"]').each(function (index, grid) {
-    	populateGrid($(grid), data_work);
-    });
+	$('table[class^="sudoku"]').each(function (index, grid) {
+		populateGrid($(grid), data_work);
+	});
 }
 
 function populateGrid(grid, data) {
@@ -85,6 +88,8 @@ function multiPush(count, func, scope) {
 	return arr;
 }
 
+// --- Utility functions for solver ------------------------------------------------------- //
+
 function getRow(grid,i) {
 	var i0 = Math.floor(i/9)*9;
 	return grid.slice(i0,i0+9);
@@ -114,11 +119,7 @@ function isValidGuess(grid,i,n) {
 	return !getCol(grid,i).includes(n) && !getRow(grid,i).includes(n) && !getBlock(grid,i).includes(n);
 }
 
-var recursionCalled = 0;
-
 function solveGridRecursion(i) {
-	recursionCalled += 1;
-	console.log(recursionCalled);
 	if(i==data_work.length) {
 		return true;
 	}
@@ -158,12 +159,14 @@ function checkGrid() {
 	return correct;
 }
 
+// --- Setup ----------------------------------------------------------------------------- //
+
 $(document).ready(function () {
 	$('[data-toggle="popover"]').popover();   
-    $('#center').append(generateSudokuGrid());
-    data = [...quizzes[n]];
-    data_work = [...data];
-    redrawGrid();
+	$('#center').append(generateSudokuGrid());
+	data = [...quizzes[n]];
+	data_work = [...data];
+	redrawGrid();
 
     //Events
     var sudoku = document.getElementById('sudoku');
@@ -193,27 +196,15 @@ $(document).ready(function () {
     var check = document.getElementById('check');
     check.onclick = function(evt){
     	if(checkGrid()) {
-			document.getElementById('feedback').innerHTML = "Your solution is correct!";
-		} else {
-			document.getElementById('feedback').innerHTML = "There is at least one error in the grid.";
-		}
+    		document.getElementById('feedback').innerHTML = "Your solution is correct!";
+    	} else {
+    		document.getElementById('feedback').innerHTML = "There is at least one error in the grid.";
+    	}
     };
 
     var solve = document.getElementById('solve');
     solve.onclick = function(evt){
-
-    	//console.log(getRow(data_work,3));
-    	//console.log(getCol(data_work,3));
-    	//console.log(getBlock(data_work,3));
-    	//console.log(isValidGuess(data_work,4,8));
-    	//console.log(isValidGuess(data_work,4,1));
-    	//console.log(isValidGuess(data_work,4,5));
-    	//console.log(isValidGuess(data_work,1,7));
-    	//console.log(isValidGuess(data_work,1,5));
-    	//console.log(getBlock(data_work,9));
-    	console.log(getRow([1, 5, 3, 6, 2, 4, 7, 8, 9, 0, 2, 0, 0, 9, 0, 0, 1, 0, 7, 0, 0, 0, 0, 0, 0, 0, 6, 2, 0, 4, 0, 3, 0, 9, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 9, 0, 7, 0, 0, 1, 6, 0, 0, 0, 5, 0, 0, 0, 2, 0, 0, 0, 0, 7, 0, 0, 0, 0, 9, 0, 0, 8, 0, 2, 0, 0, 5],9));
     	solveGridRecursion(0);
-    	console.log(data_work);
     	redrawGrid();
     };
 
@@ -230,11 +221,11 @@ $(document).ready(function () {
     };
 
     document.addEventListener('keydown', function(event) {
-	    if(event.keyCode >= 48 && event.keyCode <= 57) {
-			if(curi != -1 && curj != -1) {
-				data_work[curi + 9*curj] = event.keyCode - 48;
-				redrawGrid();
-			}
-	    };
-	});
+    	if(event.keyCode >= 48 && event.keyCode <= 57) {
+    		if(curi != -1 && curj != -1) {
+    			data_work[curi + 9*curj] = event.keyCode - 48;
+    			redrawGrid();
+    		}
+    	};
+    });
 });

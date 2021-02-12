@@ -25,10 +25,10 @@
 
 <div class="d-flex justify-content-center">
 	<center style="margin-top: 10px">
-		<button type="button" class="btn btn-danger btn-lg" id="reset">Reset</button>
-		<button type="button" class="btn btn-success btn-lg" id="check">Check</button>
-		<button type="button" class="btn btn-success btn-lg" id="solve">Solve</button>
-		<button type="button" class="btn btn-secondary btn-lg" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Select an empty field by clicking. Insert numbers by typing them on the keyboard. Use 0 to remove a number.">
+		<button type="button" class="btn btn-danger btn-lg" id="reset" data-container="body" data-toggle="popover" data-placement="bottom" data-content="You will loose your current progress." data-trigger="hover">Reset</button>
+		<button type="button" class="btn btn-success btn-lg" id="check" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Checks if there are errors in the grid." data-trigger="hover">Check</button>
+		<button type="button" class="btn btn-primary btn-lg" id="solve" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Solves the rest of the puzzle for you. This is not possible if you already made mistakes." data-trigger="hover">Solve</button>
+		<button type="button" class="btn btn-secondary btn-lg" data-container="body" data-toggle="popover" data-placement="right" data-content="Select an empty field by clicking. Insert numbers by typing them on the keyboard. Use 0 to remove a number. You can also use my implementation of a recursive sudoku solver if you are lazy." data-trigger="hover">
 			Help
 		</button>
 	</center>
