@@ -1,3 +1,31 @@
+var quizzes = [
+	[
+	    1, 0, 3, 6, 0, 4, 7, 0, 9, // 0x0
+	    0, 2, 0, 0, 9, 0, 0, 1, 0, // 0x1
+	    7, 0, 0, 0, 0, 0, 0, 0, 6, // 0x2
+	    2, 0, 4, 0, 3, 0, 9, 0, 8, // 1x0
+	    0, 0, 0, 0, 0, 0, 0, 0, 0, // 1x1
+	    5, 0, 0, 9, 0, 7, 0, 0, 1, // 1x2
+	    6, 0, 0, 0, 5, 0, 0, 0, 2, // 2x0
+	    0, 0, 0, 0, 7, 0, 0, 0, 0, // 2x1
+	    9, 0, 0, 8, 0, 2, 0, 0, 5  // 2x2
+	],
+	[
+	    2, 0, 0, 8, 0, 4, 0, 0, 6, // 0x0
+	    0, 0, 6, 0, 0, 0, 5, 0, 0, // 0x1
+	    0, 7, 4, 0, 0, 0, 9, 2, 0, // 0x2
+	    3, 0, 0, 0, 4, 0, 0, 0, 7, // 1x0
+	    0, 0, 0, 3, 0, 5, 0, 0, 0, // 1x1
+	    4, 0, 0, 0, 6, 0, 0, 0, 9, // 1x2
+	    0, 1, 9, 0, 0, 0, 7, 4, 0, // 2x0
+	    0, 0, 8, 0, 0, 0, 2, 0, 0, // 2x1
+	    5, 0, 0, 6, 0, 8, 0, 0, 1  // 2x2
+	]
+
+];
+
+var n = 0;
+
 var data = [
     1, 0, 3, 6, 0, 4, 7, 0, 9, // 0x0
     0, 2, 0, 0, 9, 0, 0, 1, 0, // 0x1
@@ -10,23 +38,15 @@ var data = [
     9, 0, 0, 8, 0, 2, 0, 0, 5  // 2x2
 ];
 
-var data_work = [
-    1, 0, 3, 6, 0, 4, 7, 0, 9, // 0x0
-    0, 2, 0, 0, 9, 0, 0, 1, 0, // 0x1
-    7, 0, 0, 0, 0, 0, 0, 0, 6, // 0x2
-    2, 0, 4, 0, 3, 0, 9, 0, 8, // 1x0
-    0, 0, 0, 0, 0, 0, 0, 0, 0, // 1x1
-    5, 0, 0, 9, 0, 7, 0, 0, 1, // 1x2
-    6, 0, 0, 0, 5, 0, 0, 0, 2, // 2x0
-    0, 0, 0, 0, 7, 0, 0, 0, 0, // 2x1
-    9, 0, 0, 8, 0, 2, 0, 0, 5  // 2x2
-];
+var data_work;
 
 var curi = -1;
 var curj = -1;
 
 $(document).ready(function () {
     $('#center').append(generateSudokuGrid());
+    data = [...quizzes[n]];
+    data_work = [...data];
     redrawGrid();
 
     var sudoku = document.getElementById('sudoku');
@@ -46,6 +66,9 @@ $(document).ready(function () {
 
     var reset = document.getElementById('reset');
     reset.onclick = function(evt){
+    	n += 1;
+    	n %= quizzes.length;
+    	data = [...quizzes[n]];
     	data_work = [...data];
     	document.getElementById('feedback').innerHTML = "";
     	redrawGrid();
